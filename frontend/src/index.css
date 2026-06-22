@@ -1,0 +1,64 @@
+@import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    /* Solid Dark Navy / Deep Space */
+    background: #0A0F24;
+    background-attachment: fixed;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  .glass-panel:hover {
+    border-color: rgba(46, 91, 255, 0.4);
+    box-shadow: 0 0 20px rgba(46, 91, 255, 0.15);
+  }
+  
+  .neon-text {
+    text-shadow: 0 0 10px rgba(46, 91, 255, 0.5), 0 0 20px rgba(57, 255, 20, 0.3);
+  }
+  
+  .gradient-button {
+    background: linear-gradient(135deg, #2E5BFF 0%, #8B5CF6 100%); /* Royal Blue to Violet/Purple */
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .gradient-button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/* Kustomisasi Input Range (Slider) */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #2E5BFF; /* Primary Royal Blue */
+  cursor: pointer;
+  margin-top: -6px;
+  box-shadow: 0 0 10px rgba(46, 91, 255, 0.6);
+}

@@ -1,0 +1,26 @@
+# Environments
+venv/
+.env
+
+# Python compilation files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+logs/
+*.log
+
+# CatBoost / ML temp info
+catboost_info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+.DS_Store
