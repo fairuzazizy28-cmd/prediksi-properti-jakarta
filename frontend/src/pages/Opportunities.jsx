@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Pagination from '../components/Pagination';
 
 export default function Opportunities() {
   const [discountVal, setDiscountVal] = useState(25);
@@ -9,6 +10,7 @@ export default function Opportunities() {
   const [appliedLocation, setAppliedLocation] = useState('Seluruh Jakarta');
 
   const [opportunities, setOpportunities] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -30,6 +32,7 @@ export default function Opportunities() {
         const data = await res.json();
         if (data.status === 'success') {
           setOpportunities(data.data);
+          setCurrentPage(1);
         } else {
           throw new Error(data.error || 'Terjadi kesalahan tidak dikenal');
         }
@@ -174,20 +177,26 @@ export default function Opportunities() {
 
         {/* Property Grid */}
         {!isLoading && !error && (
-          <div className="grid grid-cols-2 gap-6 w-full mb-16">
-            {filteredOpps.map((opp) => {
-              const isSelected = compareList.find(item => item.id === opp.id);
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
+            {(() => {
+              const itemsPerPage = 20;
+              const totalPages = Math.ceil(filteredOpps.length / itemsPerPage);
+              const paginatedOpps = filteredOpps.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
               
               return (
-              <div key={opp.id} className="bg-[#131A32] rounded-[24px] border border-white/5 overflow-hidden flex flex-col group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300">
-                {/* Image Container */}
-                <div className="h-52 relative overflow-hidden bg-slate-800">
-                  <img 
-                    src={opp.image} 
-                    alt={opp.title} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" 
-                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop'; }}
-                  />
+                <>
+                  {paginatedOpps.map((opp, idx) => {
+                    const isSelected = compareList.some(item => item.id === opp.id);
+                    return (
+                      <div key={idx} className={`bg-[#131A32] rounded-[24px] overflow-hidden flex flex-col group hover:-translate-y-1.5 transition-all duration-300 ${isSelected ? 'border-2 border-primary shadow-[0_0_20px_rgba(45,104,255,0.3)]' : 'border border-white/5 shadow-xl hover:shadow-2xl'}`}>
+                        {/* Image Section */}
+                        <div className="h-52 relative overflow-hidden bg-slate-800">
+                          <img 
+                            src={opp.image} 
+                            alt={opp.title} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" 
+                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop'; }}
+                          />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#131A32] via-transparent to-transparent opacity-80"></div>
                   <div className="absolute top-4 left-4 bg-success text-[#0A0F24] text-[10px] font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg tracking-wide">
                     <span className="text-sm leading-none">✨</span> {opp.discountPercent} DI BAWAH PASAR
@@ -238,6 +247,19 @@ export default function Opportunities() {
                 </div>
               </div>
             )})}
+            
+            {filteredOpps.length > 0 && Math.ceil(filteredOpps.length / 20) > 1 && (
+              <div className="col-span-full">
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredOpps.length / 20)}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
+            </>
+            );
+            })()}
             
             {filteredOpps.length === 0 && (
               <div className="col-span-2 py-16 text-center bg-[#131A32] rounded-[24px] border border-white/5">

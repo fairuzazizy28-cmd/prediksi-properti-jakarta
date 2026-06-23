@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Pagination from '../components/Pagination';
 
 const KECAMATAN_BY_KOTA = {
   "Jakarta Barat": ["Alfa Indah", "Angke", "Bandara", "Bojong Indah", "Cengkareng", "Cengkareng Barat", "Central Park", "Citra Garden", "Daan Mogot", "Duri Kepa", "Duri Kosambi", "Duri Pulo", "Duta Garden", "Gelong", "Gelong Baru", "Green Lake City", "Green Mansion", "Green Ville", "Green garden", "Grogol", "Grogol Petamburan", "Intercon", "Jalan Panjang", "Jelambar", "Jembatan Besi", "Jembatan Dua", "Jembatan Lima", "Joglo", "Kalideres", "Kamal", "Kapuk Kamal", "Karang Mulia", "Kav DKI", "Kebon Jeruk", "Kedoya", "Kedoya Baru", "Kedoya Selatan", "Kedoya Utara", "Kelapa Dua", "Kemanggisan", "Kembangan", "Kembangan Baru", "Kembangan Selatan", "Kepa Duri", "Kota Bambu Selatan", "Kota Bambu Utara", "Mangga Besar", "Mangga Dua", "Meruya", "Metland Puri", "Metro permata", "Mutiara Kedoya", "Palmerah", "Pegadungan", "Permata Buana", "Pesanggrahan", "Pinangsia", "Pos Pengumben", "Puri Indah", "Puri Mansion", "Puri Media", "Rawa Belong", "Rawa Buaya", "Roa Malaka", "S Parman", "Semanan", "Slipi", "Srengseng", "Sunrise Garden", "Taman Anggrek", "Taman Cosmos", "Taman Kencana", "Taman Kota", "Taman Meruya", "Taman Palem", "Taman Ratu", "Taman Surya", "Tamansari", "Tambora", "Tanjung Duren", "Tanjung Duren Selatan", "Tanjung Duren Utara", "Tanjung Gedong", "Tawakal", "Tomang", "Tubagus Angke", "Villa Meruya"],
@@ -26,6 +27,7 @@ function Prediction() {
 
   const [prediction, setPrediction] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -89,12 +91,13 @@ function Prediction() {
           carport: formData.carport,
           fasilitas_terpilih: formData.fasilitas_terpilih,
           harga_prediksi: data.harga_prediksi,
-          top_n: 4
+          top_n: 500
         })
       });
       if (recRes.ok) {
         const recData = await recRes.json();
         setRecommendations(recData.rekomendasi || []);
+        setCurrentPage(1);
       }
     } catch (err) {
       setError(err.message);
@@ -419,8 +422,20 @@ function Prediction() {
                 })()}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-card-gap">
-              {recommendations.map((item, idx) => {
-                const isUndervalued = item.Harga < harga_prediksi;
+              {(() => {
+                let relevantRecs = recommendations;
+                if (recommendations.length > 0 && recommendations[0].Skor_Kemiripan > 0.8) {
+                  relevantRecs = recommendations.slice(0, 10);
+                }
+                
+                const itemsPerPage = 10;
+                const totalPages = Math.ceil(relevantRecs.length / itemsPerPage);
+                const paginatedRecs = relevantRecs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                
+                return (
+                  <>
+                    {paginatedRecs.map((item, idx) => {
+                      const isUndervalued = item.Harga < harga_prediksi;
                 
                 // Format Spesifikasi: Utama + Tambahan
                 const ktStr = `${item.Kamar_Tidur_Utama || 0}${item.Kamar_Tidur_ART > 0 ? `+${item.Kamar_Tidur_ART}` : ''}`;
@@ -521,6 +536,19 @@ function Prediction() {
                   </div>
                 );
               })}
+              
+              {totalPages > 1 && (
+                <div className="col-span-full">
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
+              )}
+              </>
+              );
+              })()}
             </div>
           </>
         )}

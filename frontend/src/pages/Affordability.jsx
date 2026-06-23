@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import PropertyCard from '../components/PropertyCard';
+import Pagination from '../components/Pagination';
 
 export default function Affordability() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export default function Affordability() {
   const [kecamatanToKota, setKecamatanToKota] = useState({});
   const [recommendations, setRecommendations] = useState({});
   const [selectedKota, setSelectedKota] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   
   const [totalAffordable, setTotalAffordable] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -49,6 +51,7 @@ export default function Affordability() {
         setKecamatanToKota(data.kecamatan_to_kota || {});
         setTotalAffordable(data.total_affordable);
         setRecommendations(data.recommendations || {});
+        setCurrentPage(1);
         
         // Auto-select the city with highest count if nothing selected or current is 0
         if (Object.keys(counts).length > 0) {
@@ -116,6 +119,7 @@ export default function Affordability() {
       click: () => {
         // Toggle selection (if already selected, maybe unselect? Or just select)
         setSelectedKota(feature.properties.Kota);
+        setCurrentPage(1);
       }
     });
   };
@@ -130,7 +134,7 @@ export default function Affordability() {
         <p className="text-slate-400">Hitung batas maksimal properti yang dapat Anda beli, dan lihat zona persebarannya di Jakarta.</p>
       </div>
 
-      <div className="grid grid-cols-12 gap-gutter h-[calc(100vh-200px)] min-h-[600px]">
+      <div className="grid grid-cols-12 gap-6 min-h-[600px] lg:min-h-[700px]">
         
         {/* Panel Kiri - Kalkulator */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
@@ -171,7 +175,7 @@ export default function Affordability() {
                   <span>Batas Cicilan (DTI)</span>
                   <span className="text-white">{formData.dti}%</span>
                 </label>
-                <input type="range" name="dti" min="10" max="50" step="5" value={formData.dti} onChange={handleInputChange} />
+                <input type="range" name="dti" min="10" max="80" step="5" value={formData.dti} onChange={handleInputChange} />
                 <p className="text-[10px] text-slate-500 mt-2 text-right">Maks cicilan: {formatRupiah(cicilanMaks)}</p>
               </div>
 
@@ -213,7 +217,7 @@ export default function Affordability() {
         </div>
 
         {/* Panel Kanan - Map Heatmap */}
-        <div className="col-span-12 lg:col-span-8 relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl">
+        <div className="col-span-12 lg:col-span-8 relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl min-h-[400px]">
           {loading && (
             <div className="absolute inset-0 z-[1000] bg-[#0A0F24]/60 backdrop-blur-sm flex items-center justify-center">
               <div className="flex flex-col items-center">
@@ -229,6 +233,11 @@ export default function Affordability() {
           <MapContainer 
             center={[-6.200000, 106.816666]} // Center Jakarta
             zoom={11} 
+            minZoom={10}
+            maxBounds={[
+              [-6.5, 106.5], // Koordinat Barat Daya (Tangerang/Depok border)
+              [-5.9, 107.1]  // Koordinat Timur Laut (Bekasi border)
+            ]}
             scrollWheelZoom={true}
             style={{ height: '100%', width: '100%', background: '#0A0F24' }}
             zoomControl={false}
@@ -258,7 +267,7 @@ export default function Affordability() {
                       html: `<div style="color: white; text-shadow: 0px 2px 4px rgba(0,0,0,0.8), 0px 0px 10px rgba(0,0,0,0.9); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 120px; margin-left: -60px; margin-top: -10px;">${f.properties.Kota}<br/><span style="color: #4ade80; font-size: 14px;">${kotaCounts[f.properties.Kota] || 0} Unit</span></div>`,
                       iconSize: [0, 0]
                     })}
-                    eventHandlers={{ click: () => setSelectedKota(f.properties.Kota) }}
+                    eventHandlers={{ click: () => { setSelectedKota(f.properties.Kota); setCurrentPage(1); } }}
                   />
                 ))}
               </>
@@ -288,7 +297,7 @@ export default function Affordability() {
             Top Rekomendasi di {selectedKota === 'All' ? 'Seluruh Jakarta' : selectedKota}
           </h2>
           <button 
-            onClick={() => setSelectedKota('All')}
+            onClick={() => { setSelectedKota('All'); setCurrentPage(1); }}
             className="text-sm font-bold text-white bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full border border-white/20 transition-all hover:scale-105 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center gap-2"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -297,12 +306,28 @@ export default function Affordability() {
         </div>
         
         {activeRecommendations.length > 0 ? (
-          <div className="flex overflow-x-auto gap-6 pb-6 px-2 snap-x hide-scrollbar">
-            {activeRecommendations.map((prop, idx) => (
-              <div key={idx} className="min-w-[320px] max-w-[320px] snap-center shrink-0">
-                <PropertyCard property={prop} />
+          <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              {(() => {
+                const itemsPerPage = 10;
+                const paginatedRecs = activeRecommendations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                return paginatedRecs.map((prop, idx) => (
+                  <div key={idx} className="w-full">
+                    <PropertyCard property={prop} />
+                  </div>
+                ));
+              })()}
+            </div>
+            
+            {activeRecommendations.length > 0 && Math.ceil(activeRecommendations.length / 10) > 1 && (
+              <div className="mt-8">
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(activeRecommendations.length / 10)}
+                  onPageChange={setCurrentPage}
+                />
               </div>
-            ))}
+            )}
           </div>
         ) : (
           <div className="w-full py-12 flex items-center justify-center border border-white/5 bg-white/5 rounded-2xl">

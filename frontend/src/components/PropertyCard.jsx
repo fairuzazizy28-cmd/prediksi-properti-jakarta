@@ -20,15 +20,22 @@ export default function PropertyCard({ property }) {
   return (
     <div className="bg-[#131A32] border border-white/10 rounded-2xl overflow-hidden hover:shadow-[0_0_20px_rgba(46,91,255,0.3)] transition-all group flex flex-col h-full cursor-pointer">
       
-      {/* House Image Placeholder */}
-      <div className={`h-40 w-full bg-gradient-to-br ${bgClass} relative overflow-hidden`}>
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
-        {/* Abstract house icon overlay */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="white" className="drop-shadow-lg">
-            <path d="M12 3L2 12h3v8h14v-8h3L12 3zm-2 15H7v-6h3v6zm6 0h-3v-6h3v6z" />
-          </svg>
-        </div>
+      {/* House Image / Placeholder */}
+      <div className={`h-40 w-full relative overflow-hidden ${!property.Image_URL ? 'bg-gradient-to-br ' + bgClass : 'bg-[#0A0F24]'}`}>
+        
+        {property.Image_URL ? (
+          <img src={property.Image_URL} alt="Property" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
+            {/* Abstract house icon overlay */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="white" className="drop-shadow-lg">
+                <path d="M12 3L2 12h3v8h14v-8h3L12 3zm-2 15H7v-6h3v6zm6 0h-3v-6h3v6z" />
+              </svg>
+            </div>
+          </>
+        )}
         
         {/* Location Badge */}
         <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
