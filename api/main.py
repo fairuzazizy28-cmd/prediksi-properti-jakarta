@@ -14,8 +14,9 @@ app = Flask(__name__)
 CORS(app) # Enable CORS for React Frontend communication
 
 # Global Variables
-MODEL_PATH = "models/model_lgbm_properti.pkl"
-DB_PATH = "data/properti.db"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model_lgbm_properti.pkl")
+DB_PATH = os.path.join(BASE_DIR, "data", "properti.db")
 DAFTAR_FASILITAS = {
 
     'Siap Huni':                   'Fasilitas_Siap_Huni',
