@@ -119,7 +119,11 @@ function App() {
       {/* Footer applied globally */}
       <footer className="py-8 text-center text-slate-500 text-xs border-t border-white/5">
         <p>Data source: <span className="font-bold text-white">rumah123.com</span> | &copy; {new Date().getFullYear()} Fairuzazizy</p>
-        <p className="mt-1">Email: <a href="mailto:fairuzazizy28@gmail.com" className="text-primary hover:text-cyan-400 transition-colors">fairuzazizy28@gmail.com</a></p>
+        <p className="mt-1 flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+          <span>Email: <a href="mailto:fairuzazizy28@gmail.com" className="text-primary hover:text-cyan-400 transition-colors">fairuzazizy28@gmail.com</a></span>
+          <span className="hidden sm:inline text-slate-600">|</span>
+          <span>LinkedIn: <a href="https://www.linkedin.com/in/fairuzazizy" target="_blank" rel="noreferrer" className="text-primary hover:text-cyan-400 transition-colors">fairuzazizy</a></span>
+        </p>
         <div className="flex flex-wrap justify-center gap-3 mt-5 max-w-2xl mx-auto">
            <span className="px-3 py-1.5 rounded-full border border-white/10 bg-[#131A32] text-slate-300 font-mono tracking-widest text-[10px] shadow-sm hover:border-cyan-500/50 transition-colors">🐍 Python 3</span>
            <span className="px-3 py-1.5 rounded-full border border-white/10 bg-[#131A32] text-slate-300 font-mono tracking-widest text-[10px] shadow-sm hover:border-cyan-500/50 transition-colors">🧠 LightGBM </span>
