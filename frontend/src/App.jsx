@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Prediction from './pages/Prediction';
 import Opportunities from './pages/Opportunities';
@@ -6,6 +6,26 @@ import Affordability from './pages/Affordability';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
+  const [isBackendWakingUp, setIsBackendWakingUp] = useState(true);
+
+  useEffect(() => {
+    const pingBackend = async () => {
+      try {
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${API_BASE_URL}/`);
+        if (res.ok) {
+          setIsBackendWakingUp(false);
+        } else {
+          // Fallback if not 200 OK but server is running
+          setIsBackendWakingUp(false);
+        }
+      } catch (err) {
+        // If it fails immediately (CORS or network error before boot), we can try again after a delay
+        setTimeout(pingBackend, 5000);
+      }
+    };
+    pingBackend();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0A0F24] flex flex-col text-white font-['Plus_Jakarta_Sans']">
@@ -72,6 +92,17 @@ function App() {
 
       {/* Main Content Area */}
       <div className="flex-grow pt-20">
+        
+        {isBackendWakingUp && (
+          <div className="bg-[#B45309]/20 border-b border-[#F59E0B]/30 text-[#FCD34D] px-6 py-3 text-center text-sm font-semibold flex flex-wrap items-center justify-center gap-3 animate-pulse shadow-md">
+            <svg className="animate-spin h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Sistem Sedang Membangunkan Server AI (Cold Start). Proses ini mungkin memakan waktu hingga 1 menit...</span>
+          </div>
+        )}
+
         {currentView === 'home' && <Home setCurrentView={setCurrentView} />}
         {currentView === 'prediction' && <Prediction />}
         {currentView === 'opportunities' && <Opportunities />}
