@@ -39,8 +39,8 @@ function App() {
           >
             {/* J Logo */}
             <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
-              <path d="M 13 11 H 61 V 65 A 24 24 0 0 1 13 65 V 49 H 29 V 65 A 8 8 0 0 0 45 65 V 27 H 13 Z" fill="#7C3AED"/>
-              <circle cx="77" cy="19" r="10" fill="#00E5FF"/>
+              <path d="M 6 16 H 66 V 28 H 42 V 66 A 18 18 0 0 1 6 66 V 54 H 18 V 66 A 6 6 0 0 0 30 66 V 28 H 6 Z" fill="#7C3AED"/>
+              <circle cx="82" cy="22" r="12" fill="#00E5FF"/>
             </svg>
             <div className="flex flex-col justify-center">
               <span className="text-white leading-none mb-0.5">Taksirin<span className="text-primary">Jakarta</span></span>
