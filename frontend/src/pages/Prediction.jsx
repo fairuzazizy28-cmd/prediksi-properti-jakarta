@@ -41,7 +41,7 @@ function Prediction() {
       const newState = {
         ...prev,
         [name]: name.includes('luas') || name.includes('kt') || name.includes('km') || name.includes('garasi') || name.includes('carport') 
-                ? Number(value) : value
+                ? (value === '' ? '' : Number(value)) : value
       };
       // Auto update kecamatan to the first option if kota changes
       if (name === 'kota') {
