@@ -108,7 +108,7 @@ function App() {
         {currentView === 'opportunities' && <Opportunities />}
         {currentView === 'affordability' && <Affordability />}
         {currentView === 'insight' && (
-          <div className="flex-grow flex items-center justify-center flex-col">
+          <div className="flex items-center justify-center flex-col min-h-[60vh]">
             <h1 className="text-4xl font-bold text-white mb-4">Analytical Insight</h1>
             <p className="text-slate-400">Fitur ini masih dalam tahap pengembangan.</p>
             <button onClick={() => setCurrentView('home')} className="mt-8 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors">Kembali ke Home</button>
