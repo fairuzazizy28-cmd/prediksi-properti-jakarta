@@ -117,13 +117,28 @@ function App() {
       </div>
 
       {/* Footer applied globally */}
-      <footer className="py-8 text-center text-slate-500 text-xs border-t border-white/5">
-        <p>Data source: <span className="font-bold text-white">rumah123.com</span> | &copy; {new Date().getFullYear()} Fairuzazizy</p>
-        <p className="mt-1 flex flex-wrap items-center justify-center gap-2 sm:gap-4">
-          <span>Email: <a href="mailto:fairuzazizy28@gmail.com" className="text-primary hover:text-cyan-400 transition-colors">fairuzazizy28@gmail.com</a></span>
-          <span className="hidden sm:inline text-slate-600">|</span>
-          <span>LinkedIn: <a href="https://www.linkedin.com/in/fairuzazizy" target="_blank" rel="noreferrer" className="text-primary hover:text-cyan-400 transition-colors">fairuzazizy</a></span>
+      <footer className="py-8 text-center text-slate-500 text-xs border-t border-white/5 bg-[#050814]/50">
+        <p className="flex items-center justify-center gap-3 mb-3 text-slate-400">
+          <span>Data source: <span className="font-bold text-white">rumah123.com</span></span>
+          <span className="text-white/10 text-[10px]">●</span>
+          <span>&copy; {new Date().getFullYear()} Fairuzazizy</span>
         </p>
+        
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm font-medium">
+          <a href="mailto:fairuzazizy28@gmail.com" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+            <svg className="w-4 h-4 text-slate-500 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            fairuzazizy28@gmail.com
+          </a>
+          <span className="hidden sm:inline text-white/10 text-[10px]">●</span>
+          <a href="https://www.linkedin.com/in/fairuzazizy" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+            <svg className="w-4 h-4 text-slate-500 group-hover:text-[#0A66C2] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+            fairuzazizy
+          </a>
+        </div>
         <div className="flex flex-wrap justify-center gap-3 mt-5 max-w-2xl mx-auto">
            <span className="px-3 py-1.5 rounded-full border border-white/10 bg-[#131A32] text-slate-300 font-mono tracking-widest text-[10px] shadow-sm hover:border-cyan-500/50 transition-colors">🐍 Python 3</span>
            <span className="px-3 py-1.5 rounded-full border border-white/10 bg-[#131A32] text-slate-300 font-mono tracking-widest text-[10px] shadow-sm hover:border-cyan-500/50 transition-colors">🧠 LightGBM </span>
