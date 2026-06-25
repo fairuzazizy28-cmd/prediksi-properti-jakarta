@@ -63,6 +63,23 @@ function Prediction() {
   };
 
   const fetchPredictionAndRecommendations = async () => {
+    // Sanitize empty inputs to 0 for UI update
+    setFormData(prev => {
+      const sanitized = { ...prev };
+      const numericFields = ['luas_tanah', 'luas_bangunan', 'kt_utama', 'km_utama', 'kt_art', 'km_art', 'garasi', 'carport'];
+      numericFields.forEach(field => {
+        if (sanitized[field] === '') sanitized[field] = 0;
+      });
+      return sanitized;
+    });
+
+    // Prepare immediate sanitized data for fetch
+    const currentFormData = { ...formData };
+    const numericFields = ['luas_tanah', 'luas_bangunan', 'kt_utama', 'km_utama', 'kt_art', 'km_art', 'garasi', 'carport'];
+    numericFields.forEach(field => {
+      if (currentFormData[field] === '') currentFormData[field] = 0;
+    });
+
     setLoading(true);
     setError(null);
     try {
@@ -71,7 +88,7 @@ function Prediction() {
       const response = await fetch(`${API_BASE_URL}/api/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(currentFormData)
       });
       if (!response.ok) throw new Error('Gagal menghubungi AI Model');
       const data = await response.json();
@@ -82,14 +99,14 @@ function Prediction() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          kota: formData.kota,
-          kecamatan: formData.kecamatan,
-          luas_tanah: formData.luas_tanah,
-          luas_bangunan: formData.luas_bangunan,
-          kt_utama: formData.kt_utama,
-          km_utama: formData.km_utama,
-          carport: formData.carport,
-          fasilitas_terpilih: formData.fasilitas_terpilih,
+          kota: currentFormData.kota,
+          kecamatan: currentFormData.kecamatan,
+          luas_tanah: currentFormData.luas_tanah,
+          luas_bangunan: currentFormData.luas_bangunan,
+          kt_utama: currentFormData.kt_utama,
+          km_utama: currentFormData.km_utama,
+          carport: currentFormData.carport,
+          fasilitas_terpilih: currentFormData.fasilitas_terpilih,
           harga_prediksi: data.harga_prediksi,
           top_n: 500
         })
