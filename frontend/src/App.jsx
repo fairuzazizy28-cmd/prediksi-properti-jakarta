@@ -42,8 +42,8 @@ function App() {
               <path d="M 6 16 H 66 V 28 H 42 V 66 A 18 18 0 0 1 6 66 V 54 H 18 V 66 A 6 6 0 0 0 30 66 V 28 H 6 Z" fill="#7C3AED"/>
               <circle cx="82" cy="22" r="12" fill="#00E5FF"/>
             </svg>
-            <div className="flex flex-col justify-center">
-              <span className="text-white leading-none mb-0.5">Taksirin<span className="text-primary">Jakarta</span></span>
+            <div className="flex flex-col justify-center mt-1">
+              <span className="text-white leading-tight mb-1">Taksirin<span className="text-primary">Jakarta</span></span>
               <span className="text-[9px] text-slate-400 font-bold tracking-[0.2em] uppercase leading-none">SMART PROPERTY PREDICTION</span>
             </div>
           </div>
